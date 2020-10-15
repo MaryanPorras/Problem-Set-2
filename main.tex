@@ -86,7 +86,7 @@
           (I-\rho W)y = \epsilon \longleftrightarrow y = (I-\rho W)^{-1} \epsilon
       \end{align*}
       
-      Assume the error term follows a normal distribution, that is: $\epsilon \sim_{iid} N(0,\sigma^2)$.
+      Assume that the error term follows a normal distribution, that is: $\epsilon \sim_{iid} N(0,\sigma^2)$.
       
       The expected value of $y$ is:
       \begin{align}
@@ -127,7 +127,7 @@
      
      To estimate the parameters, solve the following optimization program:
       \begin{align*}
-          \max_{\rho} \quad ln(\mathcal{L}) (\sigma^2, \rho, y) &= k - \frac{n}{2} ln(\sigma^2) + ln(|(I-\rho W)|) - \frac{1}{2 \sigma^2} (y \Omega^{-1} y')\\
+          \max_{\rho, \sigma} \quad ln(\mathcal{L}) (\sigma^2, \rho, y) &= k - \frac{n}{2} ln(\sigma^2) + ln(|(I-\rho W)|) - \frac{1}{2 \sigma^2} (y \Omega^{-1} y')\\
           &= k - \frac{n}{2} ln(\sigma^2) + ln(|(I-\rho W)|) - \frac{1}{2 \sigma^2} (\epsilon \epsilon')
       \end{align*}
      
@@ -137,12 +137,17 @@
          \frac{\partial ln(\mathcal{L})}{\partial \rho} = \frac{1}{2\sigma^2} \left(2y'W'y - 2 y'W'W \rho y\right) + \frac{1}{|(I-\rho W)|} \frac{\partial |(I-\rho W)|}{\rho}  = 0
      \end{align*}
      
+     And the one that characterizes $\hat{\sigma}$ is:
+      \begin{align*}
+         \frac{\partial ln(\mathcal{L})}{\partial \sigma} = - \frac{n}{\sigma}+  \frac{1}{\sigma^4} (y \Omega^{-1} y')  = 0
+     \end{align*}
      
       \item Suppose instead you use MCO, would you obtain the same estimates? 
     \end{enumerate}  
     
         No, at first glance, the objective function in both problems is different. Relative to the MCO objective function, the log likelihood function has an additional term $(ln(|(I-\rho W)|))$ that captures the spatial dependence in the outcome variable. If we use MCO to estimate $\rho$, it will be biased, non consistent, and will not capture the spacial dependence.
-        
+        \\ 
+   
         The optimization problem with MCO is:
         
         \begin{align*}
@@ -196,13 +201,13 @@
       
       \begin{align*}
      ln(\mathcal{L}) (\sigma^2, \rho, y) &= k - \frac{1}{2 \sigma^2} \epsilon' \epsilon\\
-     &= k - \frac{1}{2 \sigma^2} (y- X\beta - W X \theta)' (y- X\beta - W X \theta)
+     &= k -\frac{n}{2} ln(\sigma^2) - \frac{1}{2 \sigma^2} (y- X\beta - W X \theta)' (y- X\beta - W X \theta)
      \end{align*}
      
      To estimate the parameters, solve the following optimization program:
       \begin{align}
-          \max_{\beta, \theta} \quad ln(\mathcal{L}) (\sigma^2, \rho, y) &= k - \frac{1}{2 \sigma^2} (y- X\beta - W X \theta)' (y- X\beta - W X \theta) \label{OptMV}\\
-          &= k - \frac{1}{2 \sigma^2} (y'y + \beta' X' X \beta + \theta' X' W' W X \theta \nonumber\\
+          \max_{\beta, \theta} \quad ln(\mathcal{L}) (\sigma^2, \rho, y) &= k -\frac{n}{2} ln(\sigma^2) - \frac{1}{2 \sigma^2} (y- X\beta - W X \theta)' (y- X\beta - W X \theta) \label{OptMV}\\
+          &= k -\frac{n}{2} ln(\sigma^2) - \frac{1}{2 \sigma^2} (y'y + \beta' X' X \beta + \theta' X' W' W X \theta \nonumber\\
           &- 2 \beta' X' y - 2 \theta' X' W' y + 2 \beta' X' W X \theta ) \nonumber
       \end{align}
      
@@ -218,6 +223,11 @@
          \hat{\theta} &= (X'W'W X \theta)^{-1} (X'W'y - \beta' X' W X) 
      \end{align*}
      
+     And $\hat{\sigma}$ from:
+     
+     \begin{align*}
+         \frac{\partial ln(\mathcal{L})}{\partial \sigma} = - \frac{n}{\sigma} + \frac{1}{\sigma^4} (y- X\beta - W X \theta)' (y- X\beta - W X \theta)  = 0
+     \end{align*}
       
       \item Suppose instead you use MCO, would you obtain the same estimates? 
       
@@ -238,20 +248,20 @@
     
 The prior distribution is equal to:
 \begin{align*}
-\pi(\beta) &= \frac{1}{\sqrt[2]{2\pi\tau^{2}I}} * e^{\frac{-\beta^T\beta}{2\tau^{2}I}}
+\pi(\beta) &= \frac{1}{\sqrt[2]{2\pi\tau^{2}}} * e^{\frac{-\beta^T\beta}{2\tau^{2}I}}
 \end{align*}
 
 The likelihood function is equal to:
 \begin{align*}
-L(y,\beta) &=  \frac{1}{\sqrt[2]{2\pi\sigma^{2}I}} * e^{\frac{-(Y-X\beta)^T(Y-X\beta)}{2\sigma^{2}I}}
+L(y,\beta) &=  \frac{1}{\sqrt[2]{2\pi\sigma^{2}}} * e^{\frac{-(Y-X\beta)^T(Y-X\beta)}{2\sigma^{2}I}}
 \end{align*}
 
 The posterior distribution is always a weighted combination of the prior distribution and the likelihood function. In other words, the posterior distribution contains all the knowledge about the unknown quantity X and summarizes the information contained in the observed data. The posterior distribution is equal to:
 
 \begin{align*}
-P(\beta|y,x) &=  \frac{1}{\sqrt[2]{2\pi\sigma^{2}I}} * e^{\frac{-(Y-X\beta)^T(Y-X\beta)}{2\sigma^{2}I}} * \frac{1}{\sqrt[2]{2\pi\tau^{2}I}} * e^{\frac{-\beta^T\beta}{2\tau^{2}I}} \\
-ln(P(\beta|y,x)) &= ln( \frac{1}{\sqrt[2]{2\pi\sigma^{2}I}} * e^{\frac{-(Y-X\beta)^T(Y-X\beta)}{2\sigma^{2}I}} * \frac{1}{\sqrt[2]{2\pi\tau^{2}I}} * e^{\frac{-\beta^T\beta}{2\tau^{2}I}}) \\
-ln(P(\beta|y,x)) &= Constant - \frac{1}{2\sigma^{2}I}(Y-X\beta)^T(Y-X\beta) - \frac{\beta^T\beta}{2\tau^2I}
+P(\beta|y,x) &=  \frac{1}{\sqrt[2]{2\pi\sigma^{2}}} * e^{\frac{-(Y-X\beta)^T(Y-X\beta)}{2\sigma^{2}}} * \frac{1}{\sqrt[2]{2\pi\tau^{2}}} * e^{\frac{-\beta^T\beta}{2\tau^{2}}} \\
+ln(P(\beta|y,x)) &= ln( \frac{1}{\sqrt[2]{2\pi\sigma^{2}}} * e^{\frac{-(Y-X\beta)^T(Y-X\beta)}{2\sigma^{2}}} * \frac{1}{\sqrt[2]{2\pi\tau^{2}}} * e^{\frac{-\beta^T\beta}{2\tau^{2}}}) \\
+ln(P(\beta|y,x)) &= Constant - \frac{1}{2\sigma^{2}}(Y-X\beta)^T(Y-X\beta) - \frac{\beta^T\beta}{2\tau^2}
 \end{align*}
 \\
 
@@ -259,19 +269,19 @@ Also, the posterior distribution can be used to find or interval estimates of X.
 
 \begin{align*}
 \hat\beta &= \max_{\beta} ln(P(\beta|y,x)) \\
-\hat\beta &= \max_{\beta} Constant - \frac{1}{2\sigma^{2}I}(Y-X\beta)^T(Y-X\beta) - \frac{\beta^T\beta}{2\tau^2I} \\
-\hat\beta &= \min_{\beta} Constant + \frac{1}{2\sigma^{2}I}(Y-X\beta)^T(Y-X\beta) + \frac{\beta^T\beta}{2\tau^2I} 
+\hat\beta &= \max_{\beta} Constant - \frac{1}{2\sigma^{2}}(Y-X\beta)^T(Y-X\beta) - \frac{\beta^T\beta}{2\tau^2} \\
+\hat\beta &= \min_{\beta} Constant + \frac{1}{2\sigma^{2}}(Y-X\beta)^T(Y-X\beta) + \frac{\beta^T\beta}{2\tau^2} 
 \end{align*}
 
 The First Order Condition (FOC) is equal to:
 \begin{align*}
-\frac{\partial ln(P(\beta|y,x))}{\partial \beta} &= \frac{1}{2\sigma^2I}(-Y^{T}X - X^{T}Y + 2X^{T}X\hat\beta) + \frac{2\hat\beta}{2\tau^2I} = 0 \\
-\frac{\partial ln(P(\beta|y,x))}{\partial \beta} &= \frac{1}{2\sigma^2I}(-Y^{T}X - X^{T}Y + 2X^{T}X\hat\beta) + \frac{\hat\beta}{\tau^2I} = 0 \\
--Y^{T}X - X^{T}Y + 2X^{T}X\hat\beta &= -\frac{2\sigma^2I\hat\beta}{\tau^2I} \\
-- 2X^{T}Y + 2X^{T}X\hat\beta &= -\frac{2\sigma^2I\hat\beta}{\tau^2I} \\
-- X^{T}Y + X^{T}X\hat\beta &= -\frac{\sigma^2I\hat\beta}{\tau^2I} \\
-- X^{T}Y &= -\frac{\sigma^2I\hat\beta}{\tau^2I} - X^{T}X\hat\beta \\
-X^{T}Y &= X^{T}X\hat\beta + \frac{\sigma^2I\hat\beta}{\tau^2I} \\
+\frac{\partial ln(P(\beta|y,x))}{\partial \beta} &= \frac{1}{2\sigma^2}(-Y^{T}X - X^{T}Y + 2X^{T}X\hat\beta) + \frac{2\hat\beta}{2\tau^2} = 0 \\
+\frac{\partial ln(P(\beta|y,x))}{\partial \beta} &= \frac{1}{2\sigma^2}(-Y^{T}X - X^{T}Y + 2X^{T}X\hat\beta) + \frac{\hat\beta}{\tau^2} = 0 \\
+-Y^{T}X - X^{T}Y + 2X^{T}X\hat\beta &= -\frac{2\sigma^2\hat\beta}{\tau^2} \\
+- 2X^{T}Y + 2X^{T}X\hat\beta &= -\frac{2\sigma^2\hat\beta}{\tau^2} \\
+- X^{T}Y + X^{T}X\hat\beta &= -\frac{\sigma^2\hat\beta}{\tau^2} \\
+- X^{T}Y &= -\frac{\sigma^2\hat\beta}{\tau^2} - X^{T}X\hat\beta \\
+X^{T}Y &= X^{T}X\hat\beta + \frac{\sigma^2\hat\beta}{\tau^2} \\
 X^{T}Y &= \hat\beta(X^{T}X + \frac{\sigma^{2}}{\tau^{2}}I)  \\
 \hat\beta &= (X^{T}X + \frac{\sigma^{2}}{\tau^{2}}I)^{-1}X^{T}Y  \\
 \hat\beta &= (X^{T}X + \lambda I)^{-1}X^{T}Y 
@@ -279,11 +289,11 @@ X^{T}Y &= \hat\beta(X^{T}X + \frac{\sigma^{2}}{\tau^{2}}I)  \\
 
     \item Compare it with the ridge formula we saw in class.
     
-The estimator of RIDGE regression is the mean of the posterior distribution under Gaussian prior. 
+Setting the RIDGE regression parameter $\lambda = \frac{\sigma^{2}}{\tau^{2}}$ we see that the solution above is equivalent to the RIDGE regression estimator. In particular, we know that the RIDGE regression's estimator is the mean of the posterior distribution under Gaussian prior. Large values of $\lambda$ , also known as the tuning parameter, tends to shrink the coefficients towards zero. Shrinkage results in simple, sparse models which are easier to analyze than high-dimensional data models with large numbers of parameters. However, there is a trade-off between bias and variance in resulting estimators: as $\lambda$ increases, bias increases and as $\lambda$ decreases, variance increases. 
 \\
     \item What is the relationship between $\lambda$ in the ridge model and $\sigma^2$ and $\tau^2$?
     
-Setting the RIDGE regression parameter $\lambda = \frac{\sigma^{2}}{\tau^{2}}$ we see that the solution above is equivalent to the RIDGE regression estimator. It is clear that $\lambda$ varies with $\sigma^2$ and $\tau^2$. When $\tau^2$ is small, meaning there is prior knowledge to believe that $\beta$ is close to zero, $\lambda$ is large. On the other hand, when $\sigma^2$ is small, meaning that observations y are not noisy, $\lambda$ is small.  Either way, the size of $\lambda$ indicates the magnitude of the penalty on $\beta$.  
+It is clear that $\lambda$ varies with $\sigma^2$ and $\tau^2$. When $\tau^2$ is small, meaning there is prior knowledge to believe that $\beta$ is close to zero, $\lambda$ is large. On the other hand, when $\sigma^2$ is small, meaning that observations y are not noisy, $\lambda$ is small.  Either way, the size of $\lambda$ indicates the magnitude of the penalty on $\beta$.  
 \\
 
 \end{enumerate}
@@ -294,25 +304,38 @@ Setting the RIDGE regression parameter $\lambda = \frac{\sigma^{2}}{\tau^{2}}$ w
 
 Consider the following augmented matrices $\tilde{X}$ and $\tilde{Y}$:
 
-$$
-\tilde{X} =
-\begin{pmatrix} 
-X                         \\
-\sqrt[2]{\lambda} I_{pxp}  \\
-\end{pmatrix}
-\quad
-$$
+\begin{align*}
+    \tilde{X} =
+    \left(\begin{array}{c}
+        X \\
+        0_{px1} \sqrt[2]{\lambda} I_{pxp} \end{array}\right) = \left(\begin{array}{cccc}
+        1 & x_{11} & \cdots & x_{1p} \\
+        \vdots & \vdots & \ddots  & \vdots\\
+       1 & x_{n 1} & \cdots & x_{n p}\\ 0 &   \sqrt[2]{\lambda} & \cdots & 0\\
+       \vdots & 0 & \ddots & \vdots \\ 0 & 0 & \cdots & \sqrt[2]{\lambda}
+       \end{array}\right)
+    \qquad \qquad
+    \tilde{Y} =
+    \left(\begin{array}{c}
+     Y \\
+    0_{pxp} \end{array}\right) = \left(\begin{array}{c}
+        y_1\\
+        \vdots\\
+        y_n\\
+        0\\
+        \vdots\\
+        0
+       \end{array}\right)
+\end{align*}
 
-$$
-\tilde{Y} =
-\begin{pmatrix} 
-Y \\
-0_{pxp} \\
-\end{pmatrix}
-\quad
-$$
+When $\tilde{Y} = \tilde{X} \beta + \epsilon$ is estimated through OLS, the optimization problem can be written as: 
 
-Now, the estimation by Ordinary-Least-Squares (OLS) yields the following estimate:
+\begin{align*}
+    \min_{\beta} &\sum_{i=1}^{n} \left( y_i - \sum_{i=0}^{p} \beta_j x_{i,j}  \right)^2 + \underbrace{(-\beta_1^2 \sqrt{\lambda})^2 + \dots + (-\beta_p^2 \sqrt{\lambda})^2}_{\text{New rows}}  \\
+    &\sum_{i=1}^{n} \left( y_i - \sum_{i=0}^{p} \beta_j x_{i,j}  \right)^2 + \lambda \sum_{i=1}^{p} \beta_j^2 
+\end{align*}
+
+Leading to the same optimization problem solved under the RIDGE estimation, where an additional variable is penalized by the tuning parameter $\lambda$. Now, the estimation of this modified model by Ordinary-Least-Squares (OLS) yields the following result:
 
 \[ \min_{\beta} (\tilde{\epsilon})^T(\tilde{\epsilon}) = \min_{\beta} (\tilde{Y}-\tilde{X}\beta)^T(\tilde{Y}-\tilde{X}\beta)\]
 
@@ -331,7 +354,12 @@ Where:
 \tilde{X}^T\tilde{Y} &= {X}^T{Y}              \\
 \end{align*}
 
-With this approach, any collinearity of the original model is solved. The inclusion of $\lambda$ in the RIDGE method, also known as the tuning parameter, in the linear regression model fulfills the purpose of making the problem non-singular even when ${X}^T{X}$ is not invertible. Unlike in the OLS method, in the RIDGE method, matrix X's original design does not need to be full rank. By adding p rows with $\sqrt{\lambda}$ to X, ${X}^T{X}$ becomes a full rank matrix.
+First, as shown above, by increasing the centered matrices X, with p additional rows with $\sqrt{\lambda}$, and Y with zeros, we can get to the RIDGE regression estimator ($\hat\beta$) through Ordinary Least Squares. Therefore, we conclude that both procedures are equivalent. 
+
+Also, with this approach, any collinearity of the original model is solved. The inclusion of $\lambda$ in the RIDGE method, also known as the tuning parameter, in the linear regression model fulfills the purpose of making the problem non-singular even when ${X}^T{X}$ is not invertible. Unlike in the OLS method, in the RIDGE method, matrix X's original design does not need to be full rank. By adding p rows with $\sqrt{\lambda}$ to X, ${X}^T{X}$ becomes a full rank matrix.
+
+Finally, 
+\\
 
   \item Reducing elastic net to lasso. Suppose that you have the following functions $EL(\beta) = (y-X\beta)^2+ \lambda_2 \beta^2+ \lambda_1|\beta|$ and $L(\beta) = (\tilde{y}-\tilde{X}\beta)^2+ c \lambda_1|\beta|$ where $c=(1+\lambda_2)^{\frac{-1}{2}}$ show that these two problems are equivalent when $\tilde{y}$ and $\tilde{X}$ are the augmented data versions of the previous exercise.
 \end{enumerate}

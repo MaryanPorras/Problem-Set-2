@@ -1,0 +1,382 @@
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Problem Set/Assignment Template to be used by the
+%% Food and Resource Economics Department - IFAS
+%% University of Florida's graduates.
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Version 1.0 - November 2019
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Ariel Soto-Caro
+%%  - asotocaro@ufl.edu
+%%  - arielsotocaro@gmail.com
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt]{article}
+\usepackage{threeparttable}
+\usepackage{design_ASC}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{caption} 
+\usepackage{enumitem}
+\usepackage{varioref}
+\usepackage{float}
+\usepackage{breqn}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{adjustbox}
+\usepackage{multirow}
+\usepackage{ragged2e,tabularx, makecell}
+\usepackage{longtable}
+\usepackage{lscape} 
+\usepackage[norule,hang]{footmisc}
+\usepackage{halloweenmath}
+\bibliographystyle{apa}
+
+\captionsetup[table]{skip=10pt}
+\setlength\parindent{0pt} %% Do not touch this
+
+\newcommand\fnote[1]{\captionsetup{font=footnotesize}\caption*{#1}}
+
+
+\usepackage{varwidth}
+\DeclareCaptionFormat{myformat}{%
+  % #1: label (e.g. "Table 1")
+  % #2: separator (e.g. ": ")
+  % #3: caption text
+  \begin{varwidth}{\linewidth}%
+    \centering
+    #1#2#3%
+  \end{varwidth}%
+}
+
+%% -----------------------------
+%% TITLE
+%% -----------------------------
+\title{\textbf{Problem Set \#2}} %% Assignment Title
+
+\author{Maryan Porras, Tatiana Mojica and Sofia Noriega}
+
+\date{\today} %% Change "\today" by another date manually
+%% -----------------------------
+%% -----------------------------
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\baselinestretch}{1.2}
+\begin{document}
+\setlength{\droptitle}{-5em}    
+%% %%%%%%%%%%%%%%%%%%%%%%%%%
+\maketitle
+
+% --------------------------
+% Start here
+% --------------------------
+
+% %%%%%%%%%%%%%%%%%%%
+\section{Theory Exercises}
+
+\begin{enumerate}
+  \item Suppose you have the following spatial model $y=\rho W y + X\beta + WX\theta  +\epsilon$ with $|\rho|<1$  this is sometimes known as the Spatial Durbin Model
+  \begin{enumerate}
+    \item First consider the following scenario  $\beta=\theta=0$. 
+    \begin{enumerate}
+      \item Write the Likelihood function. Can you find a closed form for the parameter estimators? Don't forget to be specific on the assumptions you make.
+      
+      Under this scenario, the model is: $y=\rho W y +\epsilon$, and can be written as:
+      \begin{align*}
+          (I-\rho W)y = \epsilon \longleftrightarrow y = (I-\rho W)^{-1} \epsilon
+      \end{align*}
+      
+      Assume the error term follows a normal distribution, that is: $\epsilon \sim_{iid} N(0,\sigma^2)$.
+      
+      The expected value of $y$ is:
+      \begin{align}
+          E[y] = E[(I-\rho W)^{-1} \epsilon] = (I-\rho W)^{-1} E[ \epsilon ] = 0 \label{ExpectedValue} 
+      \end{align}
+      
+      And, 
+      \begin{align}
+          E[yy'] &= E[(I-\rho W)^{-1} \epsilon \epsilon' (I-\rho W')^{-1}] \nonumber\\
+          &= (I-\rho W)^{-1} (I-\rho W')^{-1} E[ \epsilon \epsilon' ] \nonumber\\
+          &= (I-\rho W)^{-1} (I-\rho W')^{-1} \sigma^2 \label{Squared}
+      \end{align}
+      
+      Thus, replacing \eqref{ExpectedValue} and \eqref{Squared}, the variance of $y$ is:
+      
+      \begin{align}
+          Var[y]= E[yy'] - E^2[y] = (I-\rho W)^{-1} (I-\rho W')^{-1} \sigma^2 = \Omega \sigma^2 \label{Variance}
+      \end{align}
+
+     Now, plugging \eqref{ExpectedValue} and \eqref{Variance}, the associated likelihood function can be written as: 
+     
+     \begin{align*}
+     \mathcal{L} (\sigma^2, \rho, y) = \left( \frac{1}{\sqrt{2 \pi}}\right)^n |\sigma^2 \Omega|^{-\frac{1}{2}} e^{-\frac{1}{2\sigma^2} (y \Omega^{-1} y')}
+     \end{align*}
+     
+     We have that $|\sigma^2 \Omega| = \sigma^{2n} |\Omega|$, where
+     \begin{align*}
+         |\Omega| &= |[(I-\rho W)'(I-\rho W)]^{-1}| = |(I-\rho W)^{-1}(I-\rho W')^{-1}|\\
+         &= |(I-\rho W)^{-1}| |(I-\rho W)^{-1}| = |(I-\rho W)|^{-2}
+     \end{align*}
+      
+      Therefore, the log likelihood is:
+      
+      \begin{align*}
+     ln(\mathcal{L}) (\sigma^2, \rho, y) &= k - \frac{1}{2} ln(|\sigma^2 \Omega|) - \frac{1}{2 \sigma^2} (y \Omega^{-1} y')\\
+     &= k - \frac{n}{2} ln(\sigma^2) + ln(|(I-\rho W)|) - \frac{1}{2 \sigma^2} (y \Omega^{-1} y')
+     \end{align*}
+     
+     To estimate the parameters, solve the following optimization program:
+      \begin{align*}
+          \max_{\rho} \quad ln(\mathcal{L}) (\sigma^2, \rho, y) &= k - \frac{n}{2} ln(\sigma^2) + ln(|(I-\rho W)|) - \frac{1}{2 \sigma^2} (y \Omega^{-1} y')\\
+          &= k - \frac{n}{2} ln(\sigma^2) + ln(|(I-\rho W)|) - \frac{1}{2 \sigma^2} (\epsilon \epsilon')
+      \end{align*}
+     
+     The equation that characterizes $\hat{\rho}$ is:
+     
+     \begin{align*}
+         \frac{\partial ln(\mathcal{L})}{\partial \rho} = \frac{1}{2\sigma^2} \left(2y'W'y - 2 y'W'W \rho y\right) + \frac{1}{|(I-\rho W)|} \frac{\partial |(I-\rho W)|}{\rho}  = 0
+     \end{align*}
+     
+     
+      \item Suppose instead you use MCO, would you obtain the same estimates? 
+    \end{enumerate}  
+    
+        No, at first glance, the objective function in both problems is different. Relative to the MCO objective function, the log likelihood function has an additional term $(ln(|(I-\rho W)|))$ that captures the spatial dependence in the outcome variable. If we use MCO to estimate $\rho$, it will be biased, non consistent, and will not capture the spacial dependence.
+        
+        The optimization problem with MCO is:
+        
+        \begin{align*}
+          \min_{\rho} \quad \epsilon'\epsilon &=  (y (I-\rho W) (I-\rho W')  y') \\
+          &= y'y- 2y' \rho W' y + y' \rho' W' W \rho y
+      \end{align*}
+      
+        Solving this problem we have:
+         \begin{align*}
+            \frac{\partial \epsilon'\epsilon}{\partial \rho} =&  -2y'W'y + 2 y'W'W \rho y= 0\\
+            \hat{\rho} =& (y'W'Wy)^{-1}y'Wy
+         \end{align*}
+    \item Now consider that $\rho=0$, and let's proceed as before:
+    \begin{enumerate}
+      \item Write the Likelihood function. Can you find a closed form for the parameter estimators? Don't forget to be specific on the assumptions you make.
+      
+      \vspace{0.5cm}
+       Under this scenario, the model is: $y=X\beta + WX\theta +\epsilon$. Assume the error term follows a normal distribution, that is: $\epsilon \sim_{iid} N(0,\sigma^2)$.
+      
+      The expected value of $y$ is:
+      \begin{align}
+          E[y] &= E[X\beta + WX\theta +\epsilon] = X\beta + WX\theta + E[ \epsilon ] \nonumber\\
+          &= X\beta + WX\theta
+           \label{ExpectedValue2} 
+      \end{align}
+      
+      And, 
+      \begin{align}
+          E[yy'] &= E[(X\beta + WX\theta +\epsilon) (X\beta + WX\theta +\epsilon)'] \nonumber\\
+          &= X\beta \beta' X + WX \theta \beta' X' + E(\epsilon) \beta' X' + X \beta \theta' X' W' + W X \theta \theta' X' W' \nonumber \\ 
+          &+ E(\epsilon) \theta' X' W' + E(\epsilon) X \beta + WX\theta E(\theta) + E(\epsilon \epsilon')\nonumber \\
+          &= X\beta \beta' X + WX \theta \beta' X' +  X \beta \theta' X' W' + W X \theta \theta' X' W' + \sigma^2 \label{Squared2}
+      \end{align}
+      
+      Thus, replacing \eqref{ExpectedValue2} and \eqref{Squared2}, the variance of $y$ is:
+      
+      \begin{align}
+          Var[y] &= E[yy'] - E^2[y] = X\beta \beta' X + WX \theta \beta' X' \nonumber\\
+          &+  X \beta \theta' X' W' + W X \theta \theta' X' W' + \sigma^2 - (X\beta + WX\theta)' (X\beta + WX\theta) \nonumber \\
+          &= \sigma^2 \label{Variance2}
+      \end{align}
+
+     Now, plugging \eqref{ExpectedValue2} and \eqref{Variance2}, the associated likelihood function can be written as: 
+     
+     \begin{align*}
+     \mathcal{L} (\sigma^2, \rho, y) &= \left( \frac{1}{\sigma \sqrt{2 \pi}}\right)^n  e^{-\frac{1}{2\sigma^2} (y- X\beta - W X \theta)' (y- X\beta - W X \theta)} \\
+     &= \left( \frac{1}{\sigma \sqrt{2 \pi}}\right)^n  e^{-\frac{1}{2\sigma^2} \epsilon' \epsilon}
+     \end{align*}
+     
+     Therefore, the log likelihood is:
+      
+      \begin{align*}
+     ln(\mathcal{L}) (\sigma^2, \rho, y) &= k - \frac{1}{2 \sigma^2} \epsilon' \epsilon\\
+     &= k - \frac{1}{2 \sigma^2} (y- X\beta - W X \theta)' (y- X\beta - W X \theta)
+     \end{align*}
+     
+     To estimate the parameters, solve the following optimization program:
+      \begin{align}
+          \max_{\beta, \theta} \quad ln(\mathcal{L}) (\sigma^2, \rho, y) &= k - \frac{1}{2 \sigma^2} (y- X\beta - W X \theta)' (y- X\beta - W X \theta) \label{OptMV}\\
+          &= k - \frac{1}{2 \sigma^2} (y'y + \beta' X' X \beta + \theta' X' W' W X \theta \nonumber\\
+          &- 2 \beta' X' y - 2 \theta' X' W' y + 2 \beta' X' W X \theta ) \nonumber
+      \end{align}
+     
+     We can obtain $\hat{\beta}$ and $\hat{\theta}$ from:
+     
+     \begin{align*}
+         \frac{\partial ln(\mathcal{L})}{\partial \beta} &= \frac{1}{2 \sigma^2}(2X'X\beta - 2 X'y + 2 X'WX\theta) = 0 \\
+         \hat{\beta} &= (X'X)^{-1} (X'y - X'WX\theta) 
+     \end{align*}
+     
+     \begin{align*}
+         \frac{\partial ln(\mathcal{L})}{\partial \theta} &= \frac{1}{2 \sigma^2} (2X'W'WX\theta - 2 X'W'y + 2 \beta' X' WX) = 0 \\
+         \hat{\theta} &= (X'W'W X \theta)^{-1} (X'W'y - \beta' X' W X) 
+     \end{align*}
+     
+      
+      \item Suppose instead you use MCO, would you obtain the same estimates? 
+      
+      Yes, we would obtain the same estimates, as both optimization problems are equivalent. The optimization problem in the maximum likelihood (equation \ref{OptMV}) would led to the same estimates resulting from the following problem:
+      
+        \begin{align*}
+          \min_{\beta, \theta} \quad \epsilon'\epsilon &=  (y- X\beta - W X \theta)' (y- X\beta - W X \theta)
+        \end{align*}
+      
+      In this case, there are not endogeneity issues because the spatial dependence is located in the explanatory variables, so there are not omitted variables (associated to the spatial dependence in $y$).
+\\      
+  \end{enumerate}  
+ \end{enumerate}
+ 
+  \item Consider the regression model $y=X\beta +\epsilon$ with $\epsilon\sim N(0,\sigma^2I)$ furthermore assume that $\beta$ has a normal prior, i.e. $\beta\sim N(0,\tau^2I)$. 
+\begin{enumerate}
+    \item Find the posterior distribution. 
+    
+The prior distribution is equal to:
+\begin{align*}
+\pi(\beta) &= \frac{1}{\sqrt[2]{2\pi\tau^{2}I}} * e^{\frac{-\beta^T\beta}{2\tau^{2}I}}
+\end{align*}
+
+The likelihood function is equal to:
+\begin{align*}
+L(y,\beta) &=  \frac{1}{\sqrt[2]{2\pi\sigma^{2}I}} * e^{\frac{-(Y-X\beta)^T(Y-X\beta)}{2\sigma^{2}I}}
+\end{align*}
+
+The posterior distribution is always a weighted combination of the prior distribution and the likelihood function. In other words, the posterior distribution contains all the knowledge about the unknown quantity X and summarizes the information contained in the observed data. The posterior distribution is equal to:
+
+\begin{align*}
+P(\beta|y,x) &=  \frac{1}{\sqrt[2]{2\pi\sigma^{2}I}} * e^{\frac{-(Y-X\beta)^T(Y-X\beta)}{2\sigma^{2}I}} * \frac{1}{\sqrt[2]{2\pi\tau^{2}I}} * e^{\frac{-\beta^T\beta}{2\tau^{2}I}} \\
+ln(P(\beta|y,x)) &= ln( \frac{1}{\sqrt[2]{2\pi\sigma^{2}I}} * e^{\frac{-(Y-X\beta)^T(Y-X\beta)}{2\sigma^{2}I}} * \frac{1}{\sqrt[2]{2\pi\tau^{2}I}} * e^{\frac{-\beta^T\beta}{2\tau^{2}I}}) \\
+ln(P(\beta|y,x)) &= Constant - \frac{1}{2\sigma^{2}I}(Y-X\beta)^T(Y-X\beta) - \frac{\beta^T\beta}{2\tau^2I}
+\end{align*}
+\\
+
+Also, the posterior distribution can be used to find or interval estimates of X. One way to obtain a point estimate is to choose the value of X that maximizes the posterior. This method is called the maximum a posteriori (MAP) estimation. The MAP estimate of the random variable X, given that we have observed Y=y, is given by the value of x that maximizes $ln(P(\beta|y,x))$. 
+
+\begin{align*}
+\hat\beta &= \max_{\beta} ln(P(\beta|y,x)) \\
+\hat\beta &= \max_{\beta} Constant - \frac{1}{2\sigma^{2}I}(Y-X\beta)^T(Y-X\beta) - \frac{\beta^T\beta}{2\tau^2I} \\
+\hat\beta &= \min_{\beta} Constant + \frac{1}{2\sigma^{2}I}(Y-X\beta)^T(Y-X\beta) + \frac{\beta^T\beta}{2\tau^2I} 
+\end{align*}
+
+The First Order Condition (FOC) is equal to:
+\begin{align*}
+\frac{\partial ln(P(\beta|y,x))}{\partial \beta} &= \frac{1}{2\sigma^2I}(-Y^{T}X - X^{T}Y + 2X^{T}X\hat\beta) + \frac{2\hat\beta}{2\tau^2I} = 0 \\
+\frac{\partial ln(P(\beta|y,x))}{\partial \beta} &= \frac{1}{2\sigma^2I}(-Y^{T}X - X^{T}Y + 2X^{T}X\hat\beta) + \frac{\hat\beta}{\tau^2I} = 0 \\
+-Y^{T}X - X^{T}Y + 2X^{T}X\hat\beta &= -\frac{2\sigma^2I\hat\beta}{\tau^2I} \\
+- 2X^{T}Y + 2X^{T}X\hat\beta &= -\frac{2\sigma^2I\hat\beta}{\tau^2I} \\
+- X^{T}Y + X^{T}X\hat\beta &= -\frac{\sigma^2I\hat\beta}{\tau^2I} \\
+- X^{T}Y &= -\frac{\sigma^2I\hat\beta}{\tau^2I} - X^{T}X\hat\beta \\
+X^{T}Y &= X^{T}X\hat\beta + \frac{\sigma^2I\hat\beta}{\tau^2I} \\
+X^{T}Y &= \hat\beta(X^{T}X + \frac{\sigma^{2}}{\tau^{2}}I)  \\
+\hat\beta &= (X^{T}X + \frac{\sigma^{2}}{\tau^{2}}I)^{-1}X^{T}Y  \\
+\hat\beta &= (X^{T}X + \lambda I)^{-1}X^{T}Y 
+\end{align*}
+
+    \item Compare it with the ridge formula we saw in class.
+    
+The estimator of RIDGE regression is the mean of the posterior distribution under Gaussian prior. 
+\\
+    \item What is the relationship between $\lambda$ in the ridge model and $\sigma^2$ and $\tau^2$?
+    
+Setting the RIDGE regression parameter $\lambda = \frac{\sigma^{2}}{\tau^{2}}$ we see that the solution above is equivalent to the RIDGE regression estimator. It is clear that $\lambda$ varies with $\sigma^2$ and $\tau^2$. When $\tau^2$ is small, meaning there is prior knowledge to believe that $\beta$ is close to zero, $\lambda$ is large. On the other hand, when $\sigma^2$ is small, meaning that observations y are not noisy, $\lambda$ is small.  Either way, the size of $\lambda$ indicates the magnitude of the penalty on $\beta$.  
+\\
+
+\end{enumerate}
+
+  \item Centered Ridge. Suppose that $\bar x= 0$, i.e. the data has been centered. Show that the parameters that minimize $R(\beta,\beta_0) = (y-X\beta-\beta_0 \iota)'(y-X\beta-\beta_0 \iota)+ \lambda\beta'\beta$ are $\beta_0=\bar y$ and $\beta=(X'X+\lambda I)^{-1}X'y$
+
+  \item Suppose that we have the following regression model  $y=X\beta +\epsilon$, and decide to do the following: Augment the centered matrix $X$ with $p$ additional rows with $\sqrt{\lambda}$, and augment $y$ with zeros. Show that this procedures renders the ridge regression estimates, is there a link to the leverage statistic?
+
+Consider the following augmented matrices $\tilde{X}$ and $\tilde{Y}$:
+
+$$
+\tilde{X} =
+\begin{pmatrix} 
+X                         \\
+\sqrt[2]{\lambda} I_{pxp}  \\
+\end{pmatrix}
+\quad
+$$
+
+$$
+\tilde{Y} =
+\begin{pmatrix} 
+Y \\
+0_{pxp} \\
+\end{pmatrix}
+\quad
+$$
+
+Now, the estimation by Ordinary-Least-Squares (OLS) yields the following estimate:
+
+\[ \min_{\beta} (\tilde{\epsilon})^T(\tilde{\epsilon}) = \min_{\beta} (\tilde{Y}-\tilde{X}\beta)^T(\tilde{Y}-\tilde{X}\beta)\]
+
+The First Order Condition (FOC) is equal to:
+\begin{align*}
+\frac{\partial}{\partial \beta} &= -\tilde{Y}^T\tilde{X} - \tilde{X}^T \tilde{Y} + 2 \tilde{X}^T \tilde{X}\hat\beta = 0 \\
+\frac{\partial}{\partial \beta} &= -2\tilde{X}^T \tilde{Y} + 2 \tilde{X}^T \tilde{X}\hat\beta = 0 \\
+2 \tilde{X}^T \tilde{X}\hat\beta &= 2\tilde{X}^T \tilde{Y}       \\
+\tilde{X}^T \tilde{X}\hat\beta &= \tilde{X}^T \tilde{Y}       \\
+\hat\beta &= (\tilde{X}^T \tilde{X})^{-1}(\tilde{X}^T \tilde{Y})     \\
+\end{align*}
+
+Where:
+\begin{align*}
+\tilde{X}^T\tilde{X} &= {X}^T{X} + \lambda I  \\
+\tilde{X}^T\tilde{Y} &= {X}^T{Y}              \\
+\end{align*}
+
+With this approach, any collinearity of the original model is solved. The inclusion of $\lambda$ in the RIDGE method, also known as the tuning parameter, in the linear regression model fulfills the purpose of making the problem non-singular even when ${X}^T{X}$ is not invertible. Unlike in the OLS method, in the RIDGE method, matrix X's original design does not need to be full rank. By adding p rows with $\sqrt{\lambda}$ to X, ${X}^T{X}$ becomes a full rank matrix.
+
+  \item Reducing elastic net to lasso. Suppose that you have the following functions $EL(\beta) = (y-X\beta)^2+ \lambda_2 \beta^2+ \lambda_1|\beta|$ and $L(\beta) = (\tilde{y}-\tilde{X}\beta)^2+ c \lambda_1|\beta|$ where $c=(1+\lambda_2)^{\frac{-1}{2}}$ show that these two problems are equivalent when $\tilde{y}$ and $\tilde{X}$ are the augmented data versions of the previous exercise.
+\end{enumerate}
+
+\section{Empirical Problems}
+
+The main objective of these sections is to apply the concepts we learned using ``real" world data. With these, I also expect that you sharpen your data collection and wrangling skills. Finally, you should pay attention to your writing.
+
+I encourage you to turn each of the following two parts of the problem set in a way that resembles paper. As such, I expect graphs, tables, and writing to be as neat as possible. You can write it in Spanish or English, either language is fine. For students in the Ph.D., it would be a good practice to do it in English.
+
+These parts also involve a lot of coding. Please attach your code with your responses or point to your repo. In coding, like in writing, a good coding style is critical for readable code. I encourage you to follow the \href{https://style.tidyverse.org/}{tidyverse style guide}.
+
+
+\subsection{Getting to know Evanston, IL}
+
+This part of the problem set involves a series of spatial data sets on the City of Evanston, IL. The \texttt{data} folder contains the shapefiles needed. The first objective is to introduce you to some of the mapping facilities in \texttt{R}.  The data contains parcels in Evanston from the county assessors' office.\footnote{For more info check and variable definitions check \url{https://tinyurl.com/y6y6bhat} and \url{https://datacatalog.cookcountyil.gov/stories/s/p2kt-hk36}. Note how they use \texttt{Gitlab} for version control and ML for prediction}. The second objective is to use the tools studied in class to model and predict assessment values using the information included in the assessment data file and combined with infrastructure data.
+
+\begin{enumerate}
+  \item {\it ``Mapping the field''}
+  \begin{enumerate}
+  \item Begin by creating a map that includes census area identifiers (census blocks, census tracts),  major infrastructure layers (train line, roads) and Lake Michigan shore line.
+  \item Match the parcel data to the block level file and calculate average assessment values  and building area to floor area at the  block level.
+  \item Report these results in side by side maps using the map you created in part (a)
+  \item Discuss results
+  \end{enumerate}
+  \item {\it ``Out of sight, but not out of mind''}
+  \begin{enumerate}
+    
+    \item Build a table with descriptive statistics for the potential variables you can use to predict assessment values prices. Make sure to include ``spatial variables'', i.e. distances to major infrastructures. 
+  	\item Generate a prediction using OLS. Evaluate your prediction using a validation set approach, i.e., split the sample into two samples: a training (70\%) and a test (30\%) sample. Don't forget to set a seed (in \texttt{R}, \texttt{set.seed(10101)}, where 10101 is the seed.)  
+    \item Repeat the previous point but using K-fold cross validation. Comment on similarities/differences of using this approach.
+    \item Repeat using Ridge. Comment on similarities/differences to previous approaches.
+    \item Model Selection:
+    \begin{enumerate}
+      \item Use best subset selection to choose a model. Which is the selected ``best model''? (In \texttt{R} you can use \texttt{regsubset()} from the \texttt{leaps} package)
+      \item Now use Lasso. Compare to previous results
+    \end{enumerate}  
+    \item Estimate the ``best'' model found in previous exercises specifying a spatial structure of the data. You can use any of the spatial linear model that you find appropriate. Make sure to discuss how you defined proximity between observations.
+
+
+
+  \end{enumerate}
+  {\it {\bf Note 1}: Make sure you comment, compare, and discuss your results. Using figures and tables to enhance your argument are highly encouraged. Make sure you write up your results and include it in a pdf}.
+
+  {\it {\bf Note 2}: If you find that the data set is too large for spatial models you have a couple of options. As a first option you can aggregate at the block level and estimate these models on the more aggregated spatial units. A second option, is to keep a random subsample and operate on the smaller sample. Third, use your AWS account and take advantage of the cloud.}
+\end{enumerate}
+
+\end{document}
